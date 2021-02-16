@@ -4,6 +4,7 @@ README pour le fichier UTest_Thermo_DS18B20.py
 BRANCHEMENT :
 
 Le thermometre DS18B20 doit etre alimente avec 5 volts ou 3.3 Volts et le brancher sur l'entree IO4, qui corresponds a la pin 1-Wire.
+Ne pas oublier d'ajouter une pull-up de 4.7k sur le one-wire
 
 
 
