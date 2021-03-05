@@ -5,7 +5,7 @@ Sert a tester la fonctionnaliter de la communivcation entre le arduino (CCS811.c
 '''
 import serial
 
-ser = serial.Serial('/dev/serial0', 9600)
+ser = serial.Serial('/dev/ttyAMA0', 9600)
 #s = [0]
 
 while 1:
