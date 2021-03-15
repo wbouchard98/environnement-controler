@@ -104,4 +104,5 @@ if __name__ == '__main__':
             
         if time()-ThingSpeakPrevSec > ThingSpeakInterval:
             ThingSpeakPrevSec = time()
-            save_To_Thingspeak(co2,tempDS,temp_Sol,humid_Sol, tvoc)
+            save_To_Thingspeak(co2,tempDS,temp_Sol,humid_Sol, tvoc)`
+            

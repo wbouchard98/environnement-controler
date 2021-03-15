@@ -104,6 +104,6 @@ while(1):
     f_lecture_CCS()
     #f_print()
     f_JSON()
-    f_write_influx()
+    #f_write_influx()
     time.sleep(10)   
     
