@@ -6,20 +6,25 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+# Programme permettant d'afficher la fenêtre de changement de consigne. Cette fenêtre est ouverte par le programme MainGUI.py.
+# Lorsque cette fenêtre est construite, elle reçoit la consigne courante et la limite de la consigne.
+# Envoie la nouvelle consigne créé par Signal vers MainGUI.py
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+# Classe pour l'objet Signal. Cette classe existe car si je déclarais mon signal è l'intérieur de Ui_Mainwindow1(), le Signal ne marchais pas.
 class Calc(QtCore.QObject):
-    submitted = QtCore.pyqtSignal(int)
-    def sendpls(self):
+    submitted = QtCore.pyqtSignal(int) #Création de l'objet Signal
+    def sendpls(self):   # Plus nécessaire au programme, je vais devoir l'enlever au prochain PUSH.
         print("send")
         self.submitted.emit("1")
-
+        
+# Création des objets graphiques de la fenêtre de controle.
 class Ui_MainWindow1(object):
     def setup(self, MainWindow, controlTemp, limit):
         self.MainWindow = MainWindow
-        self.limit = limit
         
+        self.limit = limit        
         self.control_Temp = controlTemp
         self.new_Temp = controlTemp
         
@@ -59,8 +64,9 @@ class Ui_MainWindow1(object):
         self.lcd_Current.display(self.control_Temp)  #affiche le set temp de temp courrant
         self.lcd_New.display(self.new_Temp)
         
-        self.objsignal = Calc()
+        self.objsignal = Calc() #Création du Signal
         
+        #Création des évênnement de fenêtre.
         self.but_Submit.clicked.connect(self.on_click_submit)
         self.but_Cancel.clicked.connect(self.on_click_Cancel)
         self.but_Val_up.clicked.connect(self.on_click_up)
@@ -77,18 +83,22 @@ class Ui_MainWindow1(object):
         self.but_Val_up.setText(_translate("MainWindow", "UP"))
         self.but_Submit.setText(_translate("MainWindow", "Submit"))
     
+    # Ferme la fenêtre control.py sans modifier les valeurs de consigne.
     def on_click_Cancel(self):
         self.MainWindow.close()
     
+    # Ferme la fenêtre et envoie la nouvelle consigne par Signal vers MainGUI.py. 
     def on_click_submit(self):
-        self.objsignal.submitted.emit(self.new_Temp)
-        self.MainWindow.close()
-        
+        self.objsignal.submitted.emit(self.new_Temp) #Envoie de la valeur
+        self.MainWindow.close() #ferme fenêtre
+    
+    # Augmente la valeur de 1
     def on_click_up(self):
         if(self.new_Temp < self.limit):
             self.new_Temp = self.new_Temp +1
             self.lcd_New.display(self.new_Temp)
-        
+            
+    # Diminue la valeur de 1    
     def on_click_Down(self):
         if(self.new_Temp > 0):
             self.new_Temp = self.new_Temp -1
