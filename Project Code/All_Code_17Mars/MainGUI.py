@@ -5,137 +5,149 @@
 # Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
-
+# 
+#
+# Programme principale pour l'affichage des données des capteurs sur l'écran. Permet d'ouvrir une fenêtre qui permet de choisir la consigne de température et une autre pour l'humidité.(control.py)
+# Reçoit les informations des capteurs par MQTT du programme P_principale_lecture.py sur le topic /test. Les données reçues sont les suivantes:
+# Température du capteur DS18B20, Température et humidité du SEN0227 et concentration de CO2 et de particules organiques dans l'air du capteur CSS811.
+# Le programme reçoit par signal de la part du programme control.py les nouvelles consignes de température et humidité qui sont par la suite envoyées par MQTT au programme P_principale_lecture.py.
+# Le programme écrit aussi chaque nouvelle consigne dans last_consigne.txt pour pouvoir recommencer le contrôle de l'environnement avec les mêmes limites si le Raspberry Pi n'est plus alimenté.
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from control import *
-import paho.mqtt.client as mqtt #import the client1
+from control import *   #importe la fenêtre qui sert à régler les consignes
+import paho.mqtt.client as mqtt #import the client
 import time
 import json
 
 
-
+# Classe contenant le code servant à la communication MQTT, l'affichage et la communication avec la fenêtre control.py
 class Ui_MainWindow(object):
-    client = mqtt.Client("lol")
+    client = mqtt.Client("lol") #nouveau client MQTT
     client.connect("127.0.0.1") #connect to broker
-    mqttMessageJSON = json.loads('{"DS": {"temp": "0"}, "SHT": {"temp": "0", "hum": "0"}, "CSS811": {"CO2": "0", "TVOC": "0"}}')
+    mqttMessageJSON = json.loads('{"DS": {"temp": "0"}, "SHT": {"temp": "0", "hum": "0"}, "CSS811": {"CO2": "0", "TVOC": "0"}}') #création du squelette du message MQTT reçu de P_principale_lecture.py
    
-    dummyvalue = 0
-    control_Temp = 25
-    control_Hum = 60
+    messMQTT = 0  #Variable qui reçoit le message par MQTT
+    control_Temp = 25 #Consigne de base de température
+    control_Hum = 60 #Consigne de base pour l'humidité
     
+    #Initialisation des évênnements MQTT certain de ces évênnements ont des utilités de DEBUG seulemnt pour l'instant.
     def initmqtt(self):
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.on_disconnect = self.on_disconnect
 
-        print("initmqtt")
+        print("init mqtt")
 
     def on_disconnect(self, client, userdata, rc):
         print("disconnecting")
 
-
+    # Action effectué lorsqu'un message est envoyé sur le topic /test
+    # Affichage des nouvelles valeurs des capteurs
     def on_message(self, client, userdata, msg):
 
         try:
-            self.dummyvalue = msg.payload
+            self.messMQTT = msg.payload #prend le msg MQTT
 
-            print(self.dummyvalue)
-            self.mqttMessageJSON = json.loads(self.dummyvalue)
-
-            pad_DS_Temp = ("%.2f"%self.mqttMessageJSON["DS"]["temp"])
+            print(self.messMQTT) #Montre le message reçu en console (DEBUG)
+            self.mqttMessageJSON = json.loads(self.messMQTT) #transforme le message en JSON
+            
+            #Fait en sorte que les valeurs comme 24 s'affichent en tant que 24.00 pour rendre l'affichage plus uniforme.
+            pad_DS_Temp = ("%.2f"%self.mqttMessageJSON["DS"]["temp"])   
             pad_SENHUM = ("%.2f"%self.mqttMessageJSON["SHT"]["hum"])
             pad_SENTEMP = ("%.2f"%self.mqttMessageJSON["SHT"]["temp"])
             
-            #self.lcdNumber_SENTEMP.display(self.mqttMessageJSON["SHT"]["temp"])
-            #self.lcdNumber_DSB.display(self.mqttMessageJSON["DS"]["temp"])
+            
+            #Mise en affichage des valeurs reçu par MQTT
             self.lcdNumber_DSB.display(pad_DS_Temp)
             self.lcdNumber_SENHUM.display(pad_SENHUM)
             self.lcdNumber_SENTEMP.display(pad_SENTEMP)
-            #self.lcdNumber_SENHUM.display(self.mqttMessageJSON["SHT"]["hum"])
             self.lcdNumber_CCSCO.display(self.mqttMessageJSON["CSS811"]["CO2"])
             self.lcdNumber_CCSTVOC.display(self.mqttMessageJSON["CSS811"]["TVOC"])
             
-            #self.lcdNumber.display(self.dummyvalue)
         except Exception as err:
             print(err)
     
+    
     def on_connect(self, client, userdata, flags, rc):
         print("connected")
-#        self.flagconnect = True
-#        self.flagconnecting = False
 
+    # Fonction qui permet de se connecter au topic /test pour recevoir les informations de P_principale_lecture.py
     def connectmqtt(self):
         try:
-#            self.flagconnecting = True
             self.client.connect("127.0.0.1")
-            print("connecting????")
+            print("connecting... ...")
             self.client.subscribe("/test")
 
         except Exception as err:
             print(err)
     
+    # Fonction permettant de formatter les consignes en JSON et d'envoyer un message MQTT sur /test2 pour que P_principale_lecture.py puisse lire les nouvelles consignes.
     def returntocontrol(self):
         json_data = json.loads('{"TEMP": '+str(self.control_Temp)+',"HUM": '+str(self.control_Hum)+'}')
         self.client.publish(topic="/test2", payload=json.dumps(json_data)) 
     
+    # Fonction qui permet de gérer les signAUX que la fenêtre control.py envoie. Gère la température.
     def receiver(self, num):
         print(num)
-        #self.client.publish("/test2", num)
-        self.control_Temp = num
+        self.control_Temp = num #prend la nouvelle valeur de la consigne.
         self.returntocontrol()
         self.writeConsigne()
         
+    # Fonction qui permet de gérer les signAUX que la fenêtre control.py envoie. Gère l'humidité.
     def receiverHum(self,num):
         print(num)
-        #self.client.publish("/test2", num)
         self.control_Hum = num
         self.returntocontrol()
         self.writeConsigne()
-        
+    
+    # Écrit les nouvelles consignes dans le fichier texte last_consigne.txt. Écrase les anciennes.
     def writeConsigne(self):
         f= open("last_consigne.txt", "w")
-        f.write(str(self.control_Temp) +" "+str(self.control_Hum))
+        f.write(str(self.control_Temp) +" "+str(self.control_Hum)) # Esapce permettant l'identification des deux valeurs plus facilement.
         f.close()
-        
-    def testpls(self):
-        self.window=QtWidgets.QMainWindow()
-        self.ui=Ui_MainWindow1()
-        self.ui.setup(self.window, self.control_Temp, 60)
-        self.ui.objsignal.submitted.connect(self.receiver)
-
-        self.window.show()
     
+    # Permet d'ouvrir la fenêtre de contrôle pour la température. Création du signal entre la fenêtre présente et control.py (Nom de fonction à modifier dans les prochains Push)   
+    def testpls(self):
+        self.window=QtWidgets.QMainWindow() #Création de l'objet contenant les propriétés de fenêtre.
+        self.ui=Ui_MainWindow1() #Création de l'objet contenant la classe d'objet graphique
+        self.ui.setup(self.window, self.control_Temp, 60) #Envoie de la consigne présente et de la limite haute de de la consigne à la nouvelle fenêtre. Création des différents objets graphiques.
+        self.ui.objsignal.submitted.connect(self.receiver) #Création du lien entre le signal du control.py et du Slot de ce programme.
+
+        self.window.show() # Affiche la fenêtre control.py
+    
+    # Permet d'ouvrir la fenêtre de contrôle pour l'humidité. Création du signal entre la fenêtre présente et control.py    
     def set_Hum(self):
         self.window=QtWidgets.QMainWindow()
         self.ui=Ui_MainWindow1()
         self.ui.setup(self.window, self.control_Hum, 100)
         self.ui.objsignal.submitted.connect(self.receiverHum)
         self.window.show()
-        
+    
+    # Fonction permettant d'aller chercher les dernières consignes connues du programme.
     def get_consigne(self):
-        #readfile
-        f = open("last_consigne.txt", "r")
-        valeurConsigne = f.read()
+        f = open("last_consigne.txt", "r") 
+        valeurConsigne = f.read() 
         f.close()
-        if(valeurConsigne == ""):
-            print("Aucune consigne trouver... Ajout de consigne de temperature et d'humidite 30")
+        if(valeurConsigne == ""):  #regarde si fichier last_consigne.txt
+            #Si vide mets des consignes de base de 30 pour l'humidité et la température dans le fichier last_consigne.txt
+            print("Aucune consigne trouver... Ajout de consigne de temperature et d'humidite 30") 
             f= open("last_consigne.txt", "w")
             f.write("30 30")
             f.close()
             valeurConsigne = "30 30"
-
+        # Sépare la string et mets à jour les valeurs des consignes.
         splitted_ValCon = valeurConsigne.split(" ")
         self.control_Temp = int(splitted_ValCon[0])
         self.control_Hum = int(splitted_ValCon[1])
         self.returntocontrol()
         
+    # Créateur des différents objets graphiques. Contient aussi l'initialisation de la connection MQTT.    
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1087, 663)
         
-        self.initmqtt()
-        self.connectmqtt()
+        self.initmqtt()     #Initialisation de l'objet MQTT
+        self.connectmqtt()  # Connection au topic /test
         
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -240,10 +252,12 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
+        
+        # Création d'évênement lorsque l'usager clique sur les onglets d'option permettant de changer les consignes de température.
         self.set_temp.triggered.connect(self.testpls)
         self.set_hum.triggered.connect(self.set_Hum)
         
+        #Regarde le fichier last_consigne.txt
         self.get_consigne()
     
     def retranslateUi(self, MainWindow):
@@ -265,14 +279,14 @@ class Ui_MainWindow(object):
         self.set_temp.setText(_translate("MainWindow", "Consigne de température"))
         self.set_hum.setText(_translate("MainWindow", "Consigne Humidité"))
 
-
+#Permet de construire la fenêtre du programme GUI principale
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    time.sleep(2)
+    time.sleep(2) #Laisse le temps à l'objet MQTT de bien faire sa connection avant de partir la loop d'écoute.
     MainWindow.show()
     ui.client.loop_start()
     sys.exit(app.exec_())
