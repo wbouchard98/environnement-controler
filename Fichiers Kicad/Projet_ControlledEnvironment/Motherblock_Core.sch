@@ -1,0 +1,400 @@
+EESchema Schematic File Version 4
+LIBS:Projet_Exoplanter-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 2 5
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Projet_lib:CPC1966B U?
+U 1 1 6056F232
+P 9175 2625
+F 0 "U?" H 9175 3090 50  0000 C CNN
+F 1 "CPC1966B" H 9175 2999 50  0000 C CNN
+F 2 "" H 9175 3075 50  0001 C CNN
+F 3 "" H 9175 3075 50  0001 C CNN
+	1    9175 2625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Projet_lib:CPC1907B U?
+U 1 1 6056F351
+P 9175 4275
+F 0 "U?" H 9175 4740 50  0000 C CNN
+F 1 "CPC1907B" H 9175 4649 50  0000 C CNN
+F 2 "" H 9175 4425 50  0001 C CNN
+F 3 "" H 9175 4425 50  0001 C CNN
+	1    9175 4275
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_02x20_Odd_Even J?
+U 1 1 6056F562
+P 1625 2625
+F 0 "J?" H 1675 3742 50  0000 C CNN
+F 1 "Pi 40-Pin Connector" H 1675 3651 50  0000 C CNN
+F 2 "" H 1625 2625 50  0001 C CNN
+F 3 "~" H 1625 2625 50  0001 C CNN
+	1    1625 2625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 6056F716
+P 8450 1700
+F 0 "R?" V 8254 1700 50  0000 C CNN
+F 1 "420" V 8345 1700 50  0000 C CNN
+F 2 "" H 8450 1700 50  0001 C CNN
+F 3 "~" H 8450 1700 50  0001 C CNN
+	1    8450 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 6056F779
+P 8450 2525
+F 0 "R?" V 8254 2525 50  0000 C CNN
+F 1 "420" V 8345 2525 50  0000 C CNN
+F 2 "" H 8450 2525 50  0001 C CNN
+F 3 "~" H 8450 2525 50  0001 C CNN
+	1    8450 2525
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 6056F7BF
+P 8450 3350
+F 0 "R?" V 8254 3350 50  0000 C CNN
+F 1 "420" V 8345 3350 50  0000 C CNN
+F 2 "" H 8450 3350 50  0001 C CNN
+F 3 "~" H 8450 3350 50  0001 C CNN
+	1    8450 3350
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 6056F855
+P 8450 4175
+F 0 "R?" V 8254 4175 50  0000 C CNN
+F 1 "420" V 8345 4175 50  0000 C CNN
+F 2 "" H 8450 4175 50  0001 C CNN
+F 3 "~" H 8450 4175 50  0001 C CNN
+	1    8450 4175
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	8550 4175 8875 4175
+Wire Wire Line
+	8550 3350 8875 3350
+Wire Wire Line
+	8550 2525 8875 2525
+Wire Wire Line
+	8550 1700 8875 1700
+NoConn ~ 8875 2000
+NoConn ~ 8875 1600
+NoConn ~ 8875 2825
+NoConn ~ 8875 2425
+NoConn ~ 8875 3650
+NoConn ~ 8875 3250
+NoConn ~ 8875 4475
+NoConn ~ 8875 4075
+Text Label 1425 2225 2    50   ~ 0
+GPIO17
+Text Label 1425 2325 2    50   ~ 0
+GPIO27
+Text Label 1425 2425 2    50   ~ 0
+GPIO22
+$Comp
+L power:GND #PWR?
+U 1 1 605708C8
+P 925 2125
+F 0 "#PWR?" H 925 1875 50  0001 C CNN
+F 1 "GND" H 930 1952 50  0000 C CNN
+F 2 "" H 925 2125 50  0001 C CNN
+F 3 "" H 925 2125 50  0001 C CNN
+	1    925  2125
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1425 2125 925  2125
+$Comp
+L power:GND #PWR?
+U 1 1 605709B7
+P 925 2925
+F 0 "#PWR?" H 925 2675 50  0001 C CNN
+F 1 "GND" H 930 2752 50  0000 C CNN
+F 2 "" H 925 2925 50  0001 C CNN
+F 3 "" H 925 2925 50  0001 C CNN
+	1    925  2925
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1425 2925 925  2925
+$Comp
+L power:GND #PWR?
+U 1 1 60570A27
+P 925 3625
+F 0 "#PWR?" H 925 3375 50  0001 C CNN
+F 1 "GND" H 930 3452 50  0000 C CNN
+F 2 "" H 925 3625 50  0001 C CNN
+F 3 "" H 925 3625 50  0001 C CNN
+	1    925  3625
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1425 3625 925  3625
+$Comp
+L power:GND #PWR?
+U 1 1 60570BF0
+P 2425 3325
+F 0 "#PWR?" H 2425 3075 50  0001 C CNN
+F 1 "GND" H 2430 3152 50  0000 C CNN
+F 2 "" H 2425 3325 50  0001 C CNN
+F 3 "" H 2425 3325 50  0001 C CNN
+	1    2425 3325
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1925 3325 2425 3325
+$Comp
+L power:GND #PWR?
+U 1 1 60570E4C
+P 2425 3125
+F 0 "#PWR?" H 2425 2875 50  0001 C CNN
+F 1 "GND" H 2430 2952 50  0000 C CNN
+F 2 "" H 2425 3125 50  0001 C CNN
+F 3 "" H 2425 3125 50  0001 C CNN
+	1    2425 3125
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1925 3125 2425 3125
+$Comp
+L power:GND #PWR?
+U 1 1 60570F19
+P 2425 2625
+F 0 "#PWR?" H 2425 2375 50  0001 C CNN
+F 1 "GND" H 2430 2452 50  0000 C CNN
+F 2 "" H 2425 2625 50  0001 C CNN
+F 3 "" H 2425 2625 50  0001 C CNN
+	1    2425 2625
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1925 2625 2425 2625
+$Comp
+L power:GND #PWR?
+U 1 1 6057106D
+P 2425 2325
+F 0 "#PWR?" H 2425 2075 50  0001 C CNN
+F 1 "GND" H 2430 2152 50  0000 C CNN
+F 2 "" H 2425 2325 50  0001 C CNN
+F 3 "" H 2425 2325 50  0001 C CNN
+	1    2425 2325
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1925 2325 2425 2325
+$Comp
+L power:GND #PWR?
+U 1 1 6057119A
+P 2425 1925
+F 0 "#PWR?" H 2425 1675 50  0001 C CNN
+F 1 "GND" H 2430 1752 50  0000 C CNN
+F 2 "" H 2425 1925 50  0001 C CNN
+F 3 "" H 2425 1925 50  0001 C CNN
+	1    2425 1925
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1925 1925 2425 1925
+$Comp
+L power:GND #PWR?
+U 1 1 60571420
+P 8675 4375
+F 0 "#PWR?" H 8675 4125 50  0001 C CNN
+F 1 "GND" H 8680 4202 50  0000 C CNN
+F 2 "" H 8675 4375 50  0001 C CNN
+F 3 "" H 8675 4375 50  0001 C CNN
+	1    8675 4375
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 6057153E
+P 8675 3550
+F 0 "#PWR?" H 8675 3300 50  0001 C CNN
+F 1 "GND" H 8680 3377 50  0000 C CNN
+F 2 "" H 8675 3550 50  0001 C CNN
+F 3 "" H 8675 3550 50  0001 C CNN
+	1    8675 3550
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 60571772
+P 8675 2725
+F 0 "#PWR?" H 8675 2475 50  0001 C CNN
+F 1 "GND" H 8680 2552 50  0000 C CNN
+F 2 "" H 8675 2725 50  0001 C CNN
+F 3 "" H 8675 2725 50  0001 C CNN
+	1    8675 2725
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 605719AF
+P 8700 1900
+F 0 "#PWR?" H 8700 1650 50  0001 C CNN
+F 1 "GND" H 8705 1727 50  0000 C CNN
+F 2 "" H 8700 1900 50  0001 C CNN
+F 3 "" H 8700 1900 50  0001 C CNN
+	1    8700 1900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Projet_lib:CPC1966B U?
+U 1 1 60571CD8
+P 9175 1800
+F 0 "U?" H 9175 2265 50  0000 C CNN
+F 1 "CPC1966B" H 9175 2174 50  0000 C CNN
+F 2 "" H 9175 2250 50  0001 C CNN
+F 3 "" H 9175 2250 50  0001 C CNN
+	1    9175 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Projet_lib:CPC1966B U?
+U 1 1 60571DD4
+P 9175 3450
+F 0 "U?" H 9175 3915 50  0000 C CNN
+F 1 "CPC1966B" H 9175 3824 50  0000 C CNN
+F 2 "" H 9175 3900 50  0001 C CNN
+F 3 "" H 9175 3900 50  0001 C CNN
+	1    9175 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8875 1900 8700 1900
+Wire Wire Line
+	8875 2725 8675 2725
+Wire Wire Line
+	8675 3550 8875 3550
+Wire Wire Line
+	8875 4375 8675 4375
+Text Label 1425 3125 2    50   ~ 0
+GPIO5
+Text Label 1425 3225 2    50   ~ 0
+GPIO6
+Text Label 1425 3525 2    50   ~ 0
+GPIO26
+Text Label 1925 2125 0    50   ~ 0
+PI_RX
+Text Label 1925 2025 0    50   ~ 0
+PI_TX
+$Comp
+L Transistor_FET:BSS138 Q?
+U 1 1 6057633E
+P 4725 1650
+F 0 "Q?" V 4975 1650 50  0000 C CNN
+F 1 "BSS138" V 5066 1650 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 4925 1575 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/BS/BSS138.pdf" H 4725 1650 50  0001 L CNN
+	1    4725 1650
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 6057639B
+P 4275 1575
+F 0 "R?" V 4079 1575 50  0000 C CNN
+F 1 "10k" V 4170 1575 50  0000 C CNN
+F 2 "" H 4275 1575 50  0001 C CNN
+F 3 "~" H 4275 1575 50  0001 C CNN
+	1    4275 1575
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 605763F4
+P 5150 1575
+F 0 "R?" V 4954 1575 50  0000 C CNN
+F 1 "10k" V 5045 1575 50  0000 C CNN
+F 2 "" H 5150 1575 50  0001 C CNN
+F 3 "~" H 5150 1575 50  0001 C CNN
+	1    5150 1575
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4525 1750 4275 1750
+Wire Wire Line
+	5425 1750 5150 1750
+Wire Wire Line
+	4725 1450 4725 1325
+Wire Wire Line
+	4725 1325 4275 1325
+Wire Wire Line
+	4275 1325 4275 1475
+Wire Wire Line
+	4275 1675 4275 1750
+Connection ~ 4275 1750
+Wire Wire Line
+	4275 1750 4025 1750
+Wire Wire Line
+	4275 1325 4275 1250
+Connection ~ 4275 1325
+$Comp
+L power:+3.3V #PWR?
+U 1 1 6057883C
+P 4275 1250
+F 0 "#PWR?" H 4275 1100 50  0001 C CNN
+F 1 "+3.3V" H 4290 1423 50  0000 C CNN
+F 2 "" H 4275 1250 50  0001 C CNN
+F 3 "" H 4275 1250 50  0001 C CNN
+	1    4275 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR?
+U 1 1 605788CA
+P 5150 1225
+F 0 "#PWR?" H 5150 1075 50  0001 C CNN
+F 1 "+5V" H 5165 1398 50  0000 C CNN
+F 2 "" H 5150 1225 50  0001 C CNN
+F 3 "" H 5150 1225 50  0001 C CNN
+	1    5150 1225
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5150 1225 5150 1475
+Wire Wire Line
+	5150 1675 5150 1750
+Connection ~ 5150 1750
+Wire Wire Line
+	5150 1750 4925 1750
+Text Notes 3750 1875 0    50   ~ 0
+Pi Side
+Text Notes 5225 1850 0    50   ~ 0
+Arduino side
+Text Label 4025 1750 2    50   ~ 0
+PI_RX
+Wire Notes Line
+	3725 725  5725 725 
+Wire Notes Line
+	5725 2200 5725 725 
+Wire Notes Line
+	5725 2200 3725 2200
+Wire Notes Line
+	3725 725  3725 2200
+Text Notes 3800 825  0    50   ~ 0
+Convertisseur de niveau de tension logique
+$EndSCHEMATC
