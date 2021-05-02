@@ -1,0 +1,5 @@
+Preset_1 22 80
+Preset_2 25 45
+Preset_3 18 90
+Preset_4 27 30
+Preset_5 20 50
