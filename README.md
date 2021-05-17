@@ -4,8 +4,8 @@ Collaborateurs : Simon Jourdenais (Symon4k18) et William Bouchard (wbouchard98)
 Ce depôt contient les codes du projet de Serres Domestiques Automatisées, anciennement appelées Environnement Controlé.
 
 Les dossier et fichiers intitulés 'UTest_' sont des tests unitaires.
-Le dossier "Ancien_test_unitaires" contient plusieurs anciens code que nous avons pensé nécessaire, mais après restructuration de notre projet, avons abandonné. Ces codes ne seront pas aussi bien expliqué et peuvent ne pas marcher, mais nous avons décidé de les laisser là comme historique de notre travaille.
-Le dossier "Project_Code" contient les codes nécessaires pour faire fonctionner le projet. Plusieurs version sont disponible montrant l'évolution de notre travaille.
+Le dossier "Trash" contient plusieurs anciens code que nous avons pensés nécessaire, mais après restructuration de notre projet, avons abandonnés. Ces codes ne seront pas aussi bien expliqués et peuvent ne pas toujours fonctionner, mais nous avons décidé de les laisser là comme historique de notre travaille.
+Le dossier "Project_Code" contient les codes nécessaires pour faire fonctionner la section logique du projet, tandis que le dossier "Project_EC_GUI" contient les codes nécessaires pour les programmes visuels. Plusieurs version sont disponible montrant l'évolution de notre travaille. Seulement la dernière version est conseillé d'être utilisée.
 
 Le projet suivant sert à prendre des mesures de température, humidité et de qualité de l'air, par le biais de différents capteurs et de par la suite
 réguler l'environnement.
