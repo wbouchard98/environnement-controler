@@ -1,7 +1,7 @@
 # Projet environnement controlé
 Collaborateurs : Simon Jourdenais (Symon4k18) et William Bouchard (wbouchard98)
 
-Ce repo contient les codes du projet de Serres Domestiques Automatisées, anciennement appelées Environnement Controlé.
+Ce depôt contient les codes du projet de Serres Domestiques Automatisées, anciennement appelées Environnement Controlé.
 
 Les dossier et fichiers intitulés 'UTest_' sont des tests unitaires.
 Le dossier "Ancien_test_unitaires" contient plusieurs anciens code que nous avons pensé nécessaire, mais après restructuration de notre projet, avons abandonné. Ces codes ne seront pas aussi bien expliqué et peuvent ne pas marcher, mais nous avons décidé de les laisser là comme historique de notre travaille.
