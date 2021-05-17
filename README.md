@@ -7,18 +7,21 @@ Les dossier et fichiers intitulés 'UTest_' sont des tests unitaires.
 Le dossier "Trash" contient plusieurs anciens code que nous avons pensés nécessaire, mais après restructuration de notre projet, avons abandonnés. Ces codes ne seront pas aussi bien expliqués et peuvent ne pas toujours fonctionner, mais nous avons décidé de les laisser là comme historique de notre travaille.
 Le dossier "Project_Code" contient les codes nécessaires pour faire fonctionner la section logique du projet, tandis que le dossier "Project_EC_GUI" contient les codes nécessaires pour les programmes visuels. Plusieurs version sont disponible montrant l'évolution de notre travaille. Seulement la dernière version est conseillé d'être utilisée.
 
-Le projet suivant sert à prendre des mesures de température, humidité et de qualité de l'air, par le biais de différents capteurs et de par la suite
+Le projet suivant sert à prendre des mesures de température, d'humidité et de qualité de l'air, par le biais de différents capteurs et de par la suite
 réguler l'environnement.
 
 Voici la liste de matériel utilisé pour le projet:
-	1) RaspberryPi 3b+
+	1) RaspberryPi 4
 	2) PCB "Bloc de capteurs" *
 	3) PCB "Bloc de contrôle" *
 	4) DS18B20 x2
 	5) CSS811
 	6) SEN0227
+	7) Écran LCD tactile 7 pouces
+	8) Bloc d'alimentation d'ordinateur 450 watts
 
 	*Les détails des PCB seront montré plus loin.
+	
 
 Pour que le RaspberryPi fonctionne pour ce projet, voici les étapes que nous avons effectué:
 
