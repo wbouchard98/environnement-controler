@@ -1,24 +1,27 @@
-# environnement-controlé
+# Projet environnement controlé
 Collaborateurs : Simon Jourdenais (Symon4k18) et William Bouchard (wbouchard98)
 
-Ce repo contient les codes du projet de Serres Domestiques Automatisées, anciennement appelées Environnement Controlé.
+Ce depôt contient les codes du projet de Serres Domestiques Automatisées, anciennement appelées Environnement Controlé.
 
 Les dossier et fichiers intitulés 'UTest_' sont des tests unitaires.
-Le dossier "Ancien_test_unitaires" contient plusieurs anciens code que nous avons pensé nécessaire, mais après restructuration de notre projet, avons abandonné. Ces codes ne seront pas aussi bien expliqué et peuvent ne pas marcher, mais nous avons décidé de les laisser là comme historique de notre travaille.
-Le dossier "Project_Code" contient les codes nécessaires pour faire fonctionner le projet. Plusieurs version sont disponible montrant l'évolution de notre travaille.
+Le dossier "Trash" contient plusieurs anciens code que nous avons pensés nécessaire, mais après restructuration de notre projet, avons abandonnés. Ces codes ne seront pas aussi bien expliqués et peuvent ne pas toujours fonctionner, mais nous avons décidé de les laisser là comme historique de notre travaille.
+Le dossier "Project_Code" contient les codes nécessaires pour faire fonctionner la section logique du projet, tandis que le dossier "Project_EC_GUI" contient les codes nécessaires pour les programmes visuels. Plusieurs version sont disponible montrant l'évolution de notre travaille. Seulement la dernière version est conseillé d'être utilisée.
 
-Le projet suivant sert à prendre des mesures de température, humidité et de qualité de l'air, par le biais de différents capteurs et de par la suite
+Le projet suivant sert à prendre des mesures de température, d'humidité et de qualité de l'air, par le biais de différents capteurs et de par la suite
 réguler l'environnement.
 
 Voici la liste de matériel utilisé pour le projet:
-	1) RaspberryPi 3b+
+	1) RaspberryPi 4
 	2) PCB "Bloc de capteurs" *
 	3) PCB "Bloc de contrôle" *
 	4) DS18B20 x2
 	5) CSS811
 	6) SEN0227
+	7) Écran LCD tactile 7 pouces
+	8) Bloc d'alimentation d'ordinateur 450 watts
 
 	*Les détails des PCB seront montré plus loin.
+	
 
 Pour que le RaspberryPi fonctionne pour ce projet, voici les étapes que nous avons effectué:
 
@@ -126,6 +129,31 @@ Un ventillateur qui permet de refroidir la LED de 100W. Ce ventillateur est "dri
 #### Connecteur 12V supplémentaire
 On ajouté ce connecteur pour pouvoir ajouter d'autre élément fonctionnant sur du 12V. Comme par exemple une pompe à eau pour arroser la terre ou un ventillaeur supplémentaire. Ce connecteur sera contrôler par la pin GPIO-19 du RaspberryPi.
 
-/////////////////////////////////Ajout de how to use GUI////////////////////////////////////////
+## Utilisation de l'interface graphique
+L'interface graphique se compose de deux sections: un menu ancré sur la gauche de l'écran et l'affichage principale qui occupe le restant. Voir figure ci-dessus.
+
+![SecGUI](https://github.com/wbouchard98/hello-world/blob/8abe3be088b4d87ddb48692b84ce3599287a2228/sectionGUI.png)
+
+Le menu nous permet de naviguer entre 4 modes de GUI différents. Le premier est le mode monitorage, le deuxième est le mode consigne, le troisième est le mode paramètre et finalement le dernier est le mode administrateur.
+
+### Mode Monitorage
+Le mode monitorage est bien simple; il affiche les valeurs reçues. Les valeurs sont la température, l'humidité, la concentration de C02 et la quantité de matière organique dans l'air. Voir la figure ci-dessus pour exemple de l'affichage en mode monitorage.
+
+![MonGUI](https://github.com/wbouchard98/hello-world/blob/fc8c7f09e50d0535397c7cd5c68dbf6a1d3f6e35/monitoring.png)
+
+### Mode Consigne
+Le mode consigne permet à l'usager d'accomplir plusieurs tâches. Premièrement, une section de l'affichage est réservé à afficher les valeurs de consignes courantes. Une autre section sert à modifier manuellement les valeurs des consignes courantes. Les valeurs à l'écran dans la section de l'affichage des consignes vont changer avec les modifications effectué. L'autre section sert à choisir ou enregistrer des valeurs de consignes. Ces valeurs sont alors réutilisables si l'usager souhaite les utiliser plus tard, ou si le système est mis hors tension. Voir la figure ci-dessus pour un visuel du GUI en mode consigne.
+
+![ConGUI](https://github.com/wbouchard98/hello-world/blob/12d96521d4533a530a72c2a7a51c8ea9c224a35f/infoconsigne.png)
+
+### Mode Paramètre
+Le mode paramètre nous permet de se connecter à la base de données ThingSpeak, de se connecter à un réseau Wi-Fi et à voir des informations utiles pour l'usgaer. Pour pouvoir entrer les informations requises de Thingspeak et du Wi-Fi, un clavier sera nécessaire. Simplement le brancher dans un port USB du RaspberryPi. L'iamge ci-dessous nous permet de voir un exemple de la fenêtre paramètre.
+
+![ParaGUI](https://github.com/wbouchard98/hello-world/blob/5c9a7b863dd67d611bd76d9151b4cd8fe0018b1b/pramertredf.png)
+
+### Mode Administrateur
+Le mode Administarteur permet de contrôler manuellement les éléments de contrôle. Cette fenêtre est très utile pour vérifier le fonctionnment de son matériel. Des "sliders" servent à ajuster le PWM des éléments et ainsi dicter leur intensité de fonctionnment. Voir la figure ci-dessus pour un apperçu.
+
+![AdminGUI](https://github.com/wbouchard98/hello-world/blob/c58ebe2f87ef538df8b078601df17fc888be1bdc/admin.png)
 
 
