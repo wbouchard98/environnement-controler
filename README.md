@@ -142,9 +142,14 @@ Le mode monitorage est bien simple; il affiche les valeurs reçues. Les valeurs 
 ![MonGUI](https://github.com/wbouchard98/hello-world/blob/fc8c7f09e50d0535397c7cd5c68dbf6a1d3f6e35/monitoring.png)
 
 ### Mode Consigne
-Le mode consigne permet à l'usager d'accomplir plusieurs tâches. Premièrement, une section de l'affichage est réservé à afficher les valeurs de consignes courantes. Une autre section sert à modifier manuellement les valeurs des consignes courantes. Les valeurs à l'écran dans la section de l'affichage des consignes vont changer avec les modifications effectué. L'autre section sert à choisir ou enregistrer des valeurs de consignes. Ces valeurs sont alors réutilisables si l'usager souhaite les utiliser plus tard, ou si le système est mis hors tension. Voir la figure ci-dessus pour un visuel du GUI en mode consigne.
+Le mode consigne permet à l'usager d'accomplir plusieurs tâches. Premièrement, une section de l'affichage est réservé à afficher les valeurs de consignes courantes. Une autre section sert à modifier manuellement les valeurs des consignes courantes. Les valeurs à l'écran dans la section de l'affichage des consignes vont changer avec les modifications effectué. L'autre section sert à choisir ou enregistrer des valeurs de consignes. Ces valeurs sont alors réutilisables si l'usager souhaite les utiliser plus tard, ou si le système est mis hors tension. Voir la figure ci-dessus pour un visuel du GUI en mode consigne. Il est aussi possible d'ouvrir une autre fenêtre qui va permettre le contrôle des lumières.
 
-![ConGUI](https://github.com/wbouchard98/hello-world/blob/12d96521d4533a530a72c2a7a51c8ea9c224a35f/infoconsigne.png)
+![ConGUI](https://github.com/wbouchard98/hello-world/blob/d4458ae41f60c9c98e9af74efc8e92c2d29142b4/toast.png)
+
+#### Mode éclairage
+Appelé à partir de la fenêtre consigne, permet de configurer un cycle d'activation et de désactivation des lumières.
+
+![ConGUI](https://github.com/wbouchard98/hello-world/blob/d4458ae41f60c9c98e9af74efc8e92c2d29142b4/eclair.png)
 
 ### Mode Paramètre
 Le mode paramètre nous permet de se connecter à la base de données ThingSpeak, de se connecter à un réseau Wi-Fi et à voir des informations utiles pour l'usgaer. Pour pouvoir entrer les informations requises de Thingspeak et du Wi-Fi, un clavier sera nécessaire. Simplement le brancher dans un port USB du RaspberryPi. L'iamge ci-dessous nous permet de voir un exemple de la fenêtre paramètre.
