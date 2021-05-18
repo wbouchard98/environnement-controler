@@ -525,7 +525,7 @@
                          </font>
                         </property>
                         <property name="text">
-                         <string>Dioxide de carbone (ppm)</string>
+                         <string>Concentration en dioxyde de carbone (ppm)</string>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
@@ -588,7 +588,7 @@
                          </font>
                         </property>
                         <property name="text">
-                         <string>Qualité de l'air (%)</string>
+                         <string>Concentration totale des COV (ppb)</string>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>

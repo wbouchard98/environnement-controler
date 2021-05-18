@@ -48,23 +48,20 @@
 
 import sys, RPi.GPIO as GPIO, json
 import paho.mqtt.client as mqtt #import the client
-from time import sleep
 from Projet_EC_Class_Serre import gestionSerre
 from subprocess import check_output
 from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QDialog
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QMainWindow, QApplication 
 
 
-  
-
-
-WindowMonitor_Index = 0
+WindowMonitor_Index = 0 #defines d'index pour les fenetres
 WindowControl_Index = 1
 WindowParam_Index = 2
 WindowAdmin_Index = 3
+WindowLightTimer_Index = 4
 
-def goto_Monitor():
+def goto_Monitor(): #fonctions pour changer de fenêtres
     screenWidget.setCurrentIndex(WindowMonitor_Index)
 def goto_Setpoints():
     controlWindow.updateSetpointsLCD()
@@ -73,11 +70,11 @@ def goto_Param():
     screenWidget.setCurrentIndex(WindowParam_Index)
 def goto_Outils():
     screenWidget.setCurrentIndex(WindowAdmin_Index)
-
+def goto_LightTimer():
+    screenWidget.setCurrentIndex(WindowLightTimer_Index)
 
 class WindowMonitor(QMainWindow):
     
-
     def __init__(self):
         super(WindowMonitor,self).__init__()
         loadUi("GUI_PEC_Monitor.ui",self)
@@ -102,38 +99,79 @@ class WindowControl(QMainWindow):
         self.btn_Outils_Menu.clicked.connect(goto_Outils)
         self.btn_Monitor_Menu.clicked.connect(goto_Monitor)
         self.btn_Param_Menu.clicked.connect(goto_Param)
+        self.btn_Monitor_Menu.clicked.connect(goto_Monitor)
+        self.btn_Config_Light.clicked.connect(goto_LightTimer)
 
         self.btn_Save_Set.clicked.connect(self.btn_Save_Set_Clicked)
         self.Btn_Load_Saved_Set.clicked.connect(self.btn_Load_Saved_Set_Clicked)
-        self.btn_Augment_Temp.clicked.connect(self.btn_Augment_Temp_Clicked)
-        self.btn_Augment_Humid.clicked.connect(self.btn_Augment_Humid_Clicked)
+        self.btn_Augment_Temp.clicked.connect(self.btn_Increment_Temp_Clicked)
+        self.btn_Augment_Humid.clicked.connect(self.btn_Increment_Humid_Clicked)
         self.btn_Decrement_Temp.clicked.connect(self.btn_Decrement_Temp_Clicked)
         self.btn_Decrement_Humid.clicked.connect(self.btn_Decrement_Humid_Clicked)
-    
-    def btn_Augment_Temp_Clicked(self):
+
+
+        self.btn_Augment_Int_Vid.clicked.connect(self.btn_Augment_Int_Vid_Clicked)
+        self.btn_Decrement_Int_Vid.clicked.connect(self.btn_Decrement_Int_Vid_Clicked)
+        self.btn_Augment_Dioxide.clicked.connect(self.btn_Augment_Dioxide_Clicked)
+        self.btn_Decrement_Dioxide.clicked.connect(self.btn_Decrement_Dioxide_Clicked)
+
+
+    def btn_Increment_Temp_Clicked(self):
         if(serre.setpoint_Temp <=29):
             serre.setpoint_Temp += 1
         self.lcd_Temp_Set.display(str(serre.setpoint_Temp))
         serre.saveSetpoints()
+        sendSetpoints()
 
     def btn_Decrement_Temp_Clicked(self):
         if(serre.setpoint_Temp >=1):
             serre.setpoint_Temp -= 1
         self.lcd_Temp_Set.display(str(serre.setpoint_Temp))
         serre.saveSetpoints()
+        sendSetpoints()
 
-    def btn_Augment_Humid_Clicked(self):
+    def btn_Increment_Humid_Clicked(self):
         if(serre.setpoint_Humid <=90):       #Max de 95 % humidité
             serre.setpoint_Humid += 5
         self.lcd_Humid_Set.display(str(serre.setpoint_Humid))
         serre.saveSetpoints()
+        sendSetpoints()
 
     def btn_Decrement_Humid_Clicked(self):
         if(serre.setpoint_Humid >=5):
             serre.setpoint_Humid -= 5
         self.lcd_Humid_Set.display(str(serre.setpoint_Humid))
         serre.saveSetpoints()
+        sendSetpoints()
     
+    def btn_Augment_Int_Vid_Clicked(self):
+        if(serre.setpoint_Int_Vid<24):
+            serre.setpoint_Int_Vid+=1
+        self.lcd_Inter_Vid_Set.display(str(serre.setpoint_Int_Vid))
+        serre.saveSetpoints()
+        sendSetpoints()
+
+    def btn_Decrement_Int_Vid_Clicked(self):
+        if(serre.setpoint_Int_Vid>0):
+            serre.setpoint_Int_Vid-=1
+        self.lcd_Inter_Vid_Set.display(str(serre.setpoint_Int_Vid))
+        serre.saveSetpoints()
+        sendSetpoints()
+
+    def btn_Augment_Dioxide_Clicked(self):
+        if(serre.setpoint_Dioxide<16000):
+            serre.setpoint_Dioxide+=1000
+        self.lcd_Dioxide_Set.display(str(serre.setpoint_Dioxide))
+        serre.saveSetpoints()
+        sendSetpoints()
+
+    def btn_Decrement_Dioxide_Clicked(self):
+        if(serre.setpoint_Dioxide>0):
+            serre.setpoint_Dioxide-=1000
+        self.lcd_Dioxide_Set.display(str(serre.setpoint_Dioxide))
+        serre.saveSetpoints()
+        sendSetpoints()
+
     def btn_Save_Set_Clicked(self):
         file = open("Projet_EC_Setpoint_List.txt", "rt+")
         contenuFichier = file.read()
@@ -146,10 +184,10 @@ class WindowControl(QMainWindow):
                 file.write("\n")
             setpointLineSplit=setpointLines[x].split(" ")
             if(setpointLineSplit[0] == self.cb_Saved_Set.currentText()):
-                presetString = "{preset} {set_temp} {set_humid}".format(preset = setpointLineSplit[0],set_temp = serre.setpoint_Temp,set_humid = serre.setpoint_Humid)
+                presetString = "{preset} {set_temp} {set_humid} {set_dioxide} {set_int_vide}".format(preset = setpointLineSplit[0],set_temp = serre.setpoint_Temp,set_humid = serre.setpoint_Humid, set_dioxide = serre.setpoint_Dioxide, set_int_vide=serre.setpoint_Int_Vid)
                 setpointLines[x] = presetString
             file.write(setpointLines[x])
-        
+
 
     def btn_Load_Saved_Set_Clicked(self):
         file = open("Projet_EC_Setpoint_List.txt", "rt")
@@ -157,26 +195,45 @@ class WindowControl(QMainWindow):
         setpointLines = contenuFichier.split("\n")
         for lines in setpointLines:
             setpointLineSplit=lines.split(" ")
-            if(setpointLineSplit[0] == self.cb_Saved_Set.currentText()):
-                serre.setpoint_Name=setpointLineSplit[0]
-                serre.setpoint_Temp=int(setpointLineSplit[1])
-                serre.setpoint_Humid=int(setpointLineSplit[2])
+            try:
+                if(setpointLineSplit[0] == self.cb_Saved_Set.currentText()):
+                    serre.setpoint_Name=setpointLineSplit[0]
+                    serre.setpoint_Temp=int(setpointLineSplit[1])
+                    serre.setpoint_Humid=int(setpointLineSplit[2])
+                    serre.setpoint_Dioxide=int(setpointLineSplit[3])
+                    serre.setpoint_Int_Vid=int(setpointLineSplit[4])
+            except:
+                pass
         self.updateSetpointsLCD()
         serre.saveSetpoints()
+        sendSetpoints()
 
+    #Fonction qui peuple le combobox des congsignes avec la table de consignes préenregistrées du fichier Projet_EC_Setpoint_List.txt
     def getPresets(self):
-        file = open("Projet_EC_Setpoint_List.txt", "rt")
-        contenuFichier = file.read()
-        setpointLines = contenuFichier.split("\n")
-        for lines in setpointLines:
-            setpointLineSplit=lines.split(" ")
-            if(setpointLineSplit[0] != ""):
-                self.cb_Saved_Set.addItem(setpointLineSplit[0])
+        try:
+            file = open("Projet_EC_Setpoint_List.txt", "rt")
+            contenuFichier = file.read()
+            setpointLines = contenuFichier.split("\n")
+            for lines in setpointLines:
+                setpointLineSplit=lines.split(" ")
+                if(setpointLineSplit[0] != ""):
+                    self.cb_Saved_Set.addItem(setpointLineSplit[0])
+        except:
+            file = open("Projet_EC_Setpoint_List.txt", "wt")
+            for x in range(1,serre.NB_PRESETS+1):
+                if(x != 1):
+                    file.write("\n")
+                file.write("Preset_"+str(x)+" 0 0 0 0")
+                self.cb_Saved_Set.addItem("Preset_"+str(x))
+            file.close
         
+
+    #Fonction qui update l'affichage des valeurs des consignes
     def updateSetpointsLCD(self):
-        #Affichage des valeurs
         self.lcd_Temp_Set.display(str(serre.setpoint_Temp))
         self.lcd_Humid_Set.display(str(serre.setpoint_Humid))
+        self.lcd_Inter_Vid_Set.display(str(serre.setpoint_Int_Vid))
+        self.lcd_Dioxide_Set.display(str(serre.setpoint_Dioxide))
         
 
 
@@ -193,12 +250,10 @@ class WindowConfig(QMainWindow):
         self.btn_Thingspeak_Cle.clicked.connect(self.btn_Thingspeak_Cle_Clicked)
 
     def btn_Thingspeak_Cle_Clicked(self):
-
         api_String = '{"api_key":""}'
         json_Data = json.loads(api_String)
         json_Data["api_key"]=self.tb_Thingspeak_Cle.text()
-        clientMQTT.publish(topic=serre.TOPIC_GUI_INPUT, payload=json.dumps(json_Data)) #Publie sur /test le JSON des valeurs de capteurs.
-        print("Key Sent")
+        clientMQTT_GUI.publish(topic=serre.TOPIC_GUI_API, payload=json.dumps(json_Data)) #Publie sur /test le JSON des valeurs de capteurs.
         
 
 class WindowAdmin(QMainWindow):
@@ -288,7 +343,245 @@ class WindowAdmin(QMainWindow):
         except Exception as err:
             print(str(err))
 
+
+class WindowMinuteur(QMainWindow):
+    def __init__(self):
+        super(WindowMinuteur,self).__init__()
+        loadUi("GUI_PEC_LightTimer.ui",self)
+        self.btn_Setpoints_Menu.setStyleSheet("background-color:#c5c5c6")
+        self.btn_Setpoints_Menu.clicked.connect(goto_Setpoints)
+        self.btn_Monitor_Menu.clicked.connect(goto_Monitor)
+        self.btn_Param_Menu.clicked.connect(goto_Param)
+        self.btn_Outils_Menu.clicked.connect(goto_Outils)
+        self.getPresetCycles()
+        
+        self.chkB_DEL_Panel.stateChanged.connect(self.chkBox_DEL_Panel_Changed)
+        self.chkB_DEL_COB.stateChanged.connect(self.chkBox_DEL_COB_Changed)
+
+        self.btn_Augment_Heure_Dep.clicked.connect(self.btn_Augment_Heure_Dep_Clicked)
+        self.btn_Augment_Minute_Dep.clicked.connect(self.btn_Augment_Minute_Dep_Clicked)
+        self.btn_Decrement_Heure_Dep.clicked.connect(self.btn_Decrement_Heure_Dep_Clicked)
+        self.btn_Decrement_Minute_Dep.clicked.connect(self.btn_Decrement_Minute_Dep_Clicked)
+
+        self.btn_Augment_Heure_Fin.clicked.connect(self.btn_Augment_Heure_Fin_Clicked)
+        self.btn_Augment_Minute_Fin.clicked.connect(self.btn_Augment_Minute_Fin_Clicked)
+        self.btn_Decrement_Heure_Fin.clicked.connect(self.btn_Decrement_Heure_Fin_Clicked)
+        self.btn_Decrement_Minute_Fin.clicked.connect(self.btn_Decrement_Minute_Fin_Clicked)
+
+        self.btn_Save_Cycle.clicked.connect(self.btn_Save_Cycle_Clicked)
+        self.Btn_Load_Saved_Cycle.clicked.connect(self.btn_Load_Saved_Cycle_Clicked)
+
+    def chkBox_DEL_Panel_Changed(self):
+        if(self.chkB_DEL_Panel.isChecked()==True):
+            serre.cycle_DEL_Panel_Used = True
+        elif(self.chkB_DEL_Panel.isChecked()==False):
+            serre.cycle_DEL_Panel_Used = False
+        sendCycle()
+
+    def chkBox_DEL_COB_Changed(self):
+        if(self.chkB_DEL_COB.isChecked()==True):
+            serre.cycle_DEL_COB_Used = True
+        elif(self.chkB_DEL_COB.isChecked()==False):
+            serre.cycle_DEL_COB_Used = False
+        sendCycle()
+
+    def btn_Augment_Heure_Dep_Clicked(self):
+        heure_Depart = int(self.lbl_Heure_Dep.text())
+        if(heure_Depart<12) :
+            heure_Depart+=1
+        if(heure_Depart == 12):
+            self.lbl_Minute_Dep.setText("00")
+            serre.cycle_Minute_Dep = 0
+        showTime = "{:02d}".format(heure_Depart)
+        self.lbl_Heure_Dep.setText(showTime)
+        serre.cycle_Heure_Dep = heure_Depart
+        sendCycle()
+
+    def btn_Augment_Minute_Dep_Clicked(self):
+        minute_Depart = int(self.lbl_Minute_Dep.text())
+        if(int(self.lbl_Heure_Dep.text()) < 12):
+            if(minute_Depart<55) :
+                minute_Depart+=5
+            elif(minute_Depart == 55):
+                minute_Depart = 0
+        showTime = "{:02d}".format(minute_Depart)
+        self.lbl_Minute_Dep.setText(showTime)
+        serre.cycle_Minute_Dep = minute_Depart
+        sendCycle()
+
+    def btn_Decrement_Heure_Dep_Clicked(self):
+        heure_Depart = int(self.lbl_Heure_Dep.text())
+        if(heure_Depart>0) :
+            heure_Depart-=1
+        showTime = "{:02d}".format(heure_Depart)
+        self.lbl_Heure_Dep.setText(showTime)
+        serre.cycle_Heure_Dep = heure_Depart
+        sendCycle()
+
+    def btn_Decrement_Minute_Dep_Clicked(self):
+        minute_Depart = int(self.lbl_Minute_Dep.text())
+        if(int(self.lbl_Heure_Dep.text()) < 12):
+            if(minute_Depart>0) :
+                minute_Depart-=5
+            elif(minute_Depart == 0):
+                minute_Depart = 55
+        showTime = "{:02d}".format(minute_Depart)
+        self.lbl_Minute_Dep.setText(showTime)
+        serre.cycle_Minute_Dep = minute_Depart
+        sendCycle()
+
+    def btn_Augment_Heure_Fin_Clicked(self):
+        heure_Fin = int(self.lbl_Heure_Fin.text())
+        if(heure_Fin<24 and heure_Fin) :
+            heure_Fin+=1
+        if(heure_Fin == 24):
+            heure_Fin = 0
+            self.lbl_Minute_Fin.setText("00")
+            serre.cycle_Minute_Fin = 0
+        showTime = "{:02d}".format(heure_Fin)
+        self.lbl_Heure_Fin.setText(showTime)
+        serre.cycle_Heure_Fin = heure_Fin
+        sendCycle()
+
+    def btn_Augment_Minute_Fin_Clicked(self):
+        minute_Fin = int(self.lbl_Minute_Fin.text())
+        if(int(self.lbl_Heure_Fin.text())!=0): 
+            if(minute_Fin<55) :
+                minute_Fin+=5
+            elif(minute_Fin == 55):
+                minute_Fin = 0
+        showTime = "{:02d}".format(minute_Fin)
+        self.lbl_Minute_Fin.setText(showTime)
+        serre.cycle_Minute_Fin = minute_Fin
+        sendCycle()
+
+    def btn_Decrement_Heure_Fin_Clicked(self):
+        heure_Fin = int(self.lbl_Heure_Fin.text())
+        if(heure_Fin>12) :
+            heure_Fin-=1
+        elif(heure_Fin == 0):
+            heure_Fin = 23
+        showTime = "{:02d}".format(heure_Fin)
+        self.lbl_Heure_Fin.setText(showTime)
+        serre.cycle_Heure_Fin = heure_Fin
+        sendCycle()
+
+    def btn_Decrement_Minute_Fin_Clicked(self):    
+        minute_Fin = int(self.lbl_Minute_Fin.text())
+        if(int(self.lbl_Heure_Fin.text())!=0): 
+            if(minute_Fin>0) :
+                minute_Fin-=5
+            elif(minute_Fin == 0):
+                minute_Fin = 55
+        showTime = "{:02d}".format(minute_Fin)
+        self.lbl_Minute_Fin.setText(showTime)
+        serre.cycle_Minute_Fin = minute_Fin
+        sendCycle()
+
+    def getPresetCycles(self):
+        list_Cycles = ["24:0", "18:6", "12:12", "Cycle 1", "Cycle 2"]
+        try:
+            file = open("Projet_EC_Cycles_List.txt", "rt")
+            contenuFichier = file.read()
+            cyclesLines = contenuFichier.split("\n")
+            for lines in cyclesLines:
+                cyclesLinesSplit=lines.split(";")
+                if(cyclesLinesSplit[0] != ""):
+                    self.cb_Saved_Cycle.addItem(cyclesLinesSplit[0])
+        except:
+            file = open("Projet_EC_Cycles_List.txt", "wt")
+            for x in range(1,len(list_Cycles)+1):
+                if(x != 1): 
+                    file.write("\n")# Le newline est ici pour ne pas mettre de newline a la fin et avoir une ligne vide
+                if(x == 1):
+                    heure_Dep = "00h00"
+                    heure_Fin = "00h00"
+                elif(x == 2):
+                    heure_Dep = "04h00"
+                    heure_Fin = "22h00"  
+                elif(x == 3):
+                    heure_Dep = "8h00"
+                    heure_Fin = "20h00"  
+                else:
+                    heure_Dep = "00h00"
+                    heure_Fin = "00h00"  
+
+                file.write("{};{};{}".format(list_Cycles[x-1], heure_Dep, heure_Fin))
+                self.cb_Saved_Cycle.addItem(list_Cycles[x-1])
+            file.close
+
+
+    def btn_Save_Cycle_Clicked(self):
+        file = open("Projet_EC_Cycles_List.txt", "rt")
+        contenuFichier = file.read()
+        contenuFichier = contenuFichier.rstrip()
+        setpointLines = contenuFichier.split("\n")
+        file.close()
+        file = open("Projet_EC_Cycles_List.txt", "w")
+        for x in range(0,len(setpointLines)):
+            if(x != 0):
+                file.write("\n")
+            setpointLineSplit=setpointLines[x].split(";")
+            if(setpointLineSplit[0] == self.cb_Saved_Cycle.currentText()):
+                presetString = "{preset};{heure_Dep}h{minute_Dep};{heure_Fin}h{minute_Fin}".format(preset = setpointLineSplit[0],heure_Dep = serre.cycle_Heure_Dep, minute_Dep = serre.cycle_Minute_Dep,heure_Fin = serre.cycle_Heure_Fin, minute_Fin=serre.cycle_Minute_Fin)
+                setpointLines[x] = presetString
+            file.write(setpointLines[x])
+
+
+    def btn_Load_Saved_Cycle_Clicked(self):
+        try:
+            file = open("Projet_EC_Cycles_List.txt", "rt")
+            contenuFichier = file.read()
+            setpointLines = contenuFichier.split("\n")
+            for lines in setpointLines:
+                setpointLineSplit=lines.split(";")
+                if(setpointLineSplit[0] == self.cb_Saved_Cycle.currentText()):
+                    try:
+                        serre.cycle_Name=setpointLineSplit[0]
+                        split_Cycle_Heure = setpointLineSplit[1].split("h")
+                        serre.cycle_Heure_Dep=int(split_Cycle_Heure[0])
+                        serre.cycle_Minute_Dep=int(split_Cycle_Heure[1])
+                        split_Cycle_Heure = setpointLineSplit[2].split("h")
+                        serre.cycle_Heure_Fin=int(split_Cycle_Heure[0])
+                        serre.cycle_Minute_Fin=int(split_Cycle_Heure[1])
+                        self.lbl_Heure_Dep.setText("{:02d}".format(serre.cycle_Heure_Dep))
+                        self.lbl_Minute_Dep.setText("{:02d}".format(serre.cycle_Minute_Dep))
+                        self.lbl_Heure_Fin.setText("{:02d}".format(serre.cycle_Heure_Fin))
+                        self.lbl_Minute_Fin.setText("{:02d}".format(serre.cycle_Minute_Fin))
+                    except Exception as err:
+                        print(err)
+            sendCycle()
+        except:
+            print("Erreur de lecture du fichier des cycles.")
+
+
+def sendCycle():
+    serre.saveCycle()
+    
+    cycle_String = '{"Cycle":{"Nom": "", "Lumiere": { "DEL_COB" : 0, "DEL_Panel" : 0 }, "Temps": { "Depart" : { "Heure" : 0, "Minute" : 0 }, "Fin": { "Heure" : 0, "Minute" : 0  } } } }'
+    json_Data = json.loads(cycle_String)
+    json_Data["Cycle"]["Nom"]=serre.cycle_Name
+    json_Data["Cycle"]["Lumiere"]["DEL_COB"] = serre.cycle_DEL_COB_Used
+    json_Data["Cycle"]["Lumiere"]["DEL_Panel"] = serre.cycle_DEL_Panel_Used
+    json_Data["Cycle"]["Temps"]["Depart"]["Heure"]=serre.cycle_Heure_Dep
+    json_Data["Cycle"]["Temps"]["Depart"]["Minute"]=serre.cycle_Minute_Dep
+    json_Data["Cycle"]["Temps"]["Fin"]["Heure"]=serre.cycle_Heure_Fin
+    json_Data["Cycle"]["Temps"]["Fin"]["Minute"]=serre.cycle_Minute_Fin
+    clientMQTT_GUI.publish(topic=serre.TOPIC_GUI_INPUT_CYCLE, payload=json.dumps(json_Data)) #Publie sur /test le JSON des valeurs de capteurs.
+
+
+def sendSetpoints():
+    setpoints_String = '{"Setpoints":{"Temp": 0, "Humid": 0, "Dioxide": 0, "Int_Vide": 0} }'
+    json_Data = json.loads(setpoints_String)
+    json_Data["Setpoints"]["Temp"]=serre.setpoint_Temp
+    json_Data["Setpoints"]["Humid"]=serre.setpoint_Humid
+    json_Data["Setpoints"]["Dioxide"]=serre.setpoint_Dioxide
+    json_Data["Setpoints"]["Int_Vide"]=serre.setpoint_Int_Vid
+    clientMQTT_GUI.publish(topic=serre.TOPIC_GUI_INPUT_SET, payload=json.dumps(json_Data)) #Publie sur /test le JSON des valeurs de capteurs.
+        
+
 def meanTempShowLCD(mqttMessageJSON):
+    global monitorWindow
     mean_Temp = 0.0
     if(int(mqttMessageJSON["SHT"]["temp"]) != -1 and int(mqttMessageJSON["DS"]["temp"]) != -1 ):
         mean_Temp =(float(mqttMessageJSON["SHT"]["temp"])+float(mqttMessageJSON["DS"]["temp"]))/2
@@ -309,32 +602,33 @@ def meanTempShowLCD(mqttMessageJSON):
 def on_message(client, userdata, msg):
     try:
         dataMQTT = msg.payload 
-        mqttMessageJSON = json.loads(dataMQTT) #transforme le message en JSON
-        #print(msg.topic)
+        mqttMessageJSON = json.loads(dataMQTT) #Load le message en JSON ( de dict)
         if (msg.topic==serre.TOPIC_GUI_FLAG_API):
-            #print(mqttMessageJSON['api_ok'])
-            if(mqttMessageJSON['api_ok']) == True:
-                configWindow.lbl_Info_Erreurs.takeItem(1)
-                configWindow.lbl_Info_Erreurs.insertItem(1,("Clé Thingspeak valide"))
-            elif(mqttMessageJSON['api_ok']) == False:
-                configWindow.lbl_Info_Erreurs.takeItem(1)
-                configWindow.lbl_Info_Erreurs.insertItem(1,("Clé Thingspeak invalide "))
-        elif(msg.topic == serre.TOPIC_SERRE):
+            updateThingspeakValidity(mqttMessageJSON['api_ok'])
+        elif(msg.topic == serre.TOPIC_DATA_SERRE):
             meanTempShowLCD(mqttMessageJSON)
     except Exception as err:
         print(err)
 
-
-clientMQTT = mqtt.Client("clientMQTT") #client MQTT lié au échanges entre les données de la serre et l'affichage
-
-        
+def updateThingspeakValidity(state):
+    configWindow.lbl_Info_Erreurs.takeItem(1)
+    if state == True:
+        configWindow.lbl_Info_Erreurs.insertItem(1,("Clé Thingspeak valide"))
+    elif state == False:
+        configWindow.lbl_Info_Erreurs.insertItem(1,("Clé Thingspeak invalide "))
 
 if __name__ == "__main__":   #Debut du "Main"
-    #Init
-    serre = gestionSerre() #Instanciation d'un objet de Controle D'environnement. Elle est la classe majeure du programm
-    clientMQTT.connect(serre.BROKER_MQTT_ADDR)
-    clientMQTT.subscribe([(serre.TOPIC_SERRE,0),(serre.TOPIC_GUI_FLAGS,0)])
-    clientMQTT.on_message = on_message
+    serre = gestionSerre() #Instanciation d'un objet de la classe gestionSerre Elle serre a storer les données de la serre
+    serre.setup_GPIO()
+    serre.getAPI()
+    
+    clientMQTT_GUI = mqtt.Client("clientMQTT_GUI") #client MQTT lié au échanges entre les données de la serre et l'affichage
+    clientMQTT_GUI.connect(serre.BROKER_MQTT_ADDR)
+    clientMQTT_GUI.subscribe(serre.TOPIC_PROJET)
+    clientMQTT_GUI.on_message = on_message
+    clientMQTT_GUI.loop_start()  
+
+
     #Setup GUI
     app = QApplication(sys.argv)
     screenWidget = QtWidgets.QStackedWidget() #Widget qui contient toutes les fenetres et permet de switcher entre fenetres
@@ -342,24 +636,29 @@ if __name__ == "__main__":   #Debut du "Main"
     controlWindow = WindowControl()
     configWindow = WindowConfig()
     adminWindow = WindowAdmin()
+    timerWindow = WindowMinuteur()
     screenWidget.addWidget(monitorWindow)   #Ajoute les fenetres au Gestionnaire screenWidget
     screenWidget.addWidget(controlWindow)
     screenWidget.addWidget(configWindow)
     screenWidget.addWidget(adminWindow)
-
-
-    clientMQTT.loop_start()  
+    screenWidget.addWidget(timerWindow)
     
+    if(serre.cle_API != ""):
+        api_String = '{"api_key":""}'
+        json_Data = json.loads(api_String)
+        json_Data["api_key"]=serre.cle_API
+        clientMQTT_GUI.publish(topic=serre.TOPIC_GUI_API_INIT, payload=json.dumps(json_Data)) #Publie sur /test le JSON des valeurs de capteurs.
+        configWindow.tb_Thingspeak_Cle.setText(str(serre.cle_API))
+
+    updateThingspeakValidity(serre.Flag_Thingspeak_Connected)
+
     #screenWidget.showFullScreen()         #Affiche en plein ecran ( PROJET MODE )
     screenWidget.showMaximized()         #Affiche le GUI en maximizé ( Bloquant )
-
     GPIO.cleanup()
-    
     try:
         sys.exit(app.exec_())
     except:
         print("Exiting")
-
 
 
 

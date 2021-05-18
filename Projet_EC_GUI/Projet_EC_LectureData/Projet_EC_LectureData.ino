@@ -21,7 +21,7 @@ unsigned long currentTime = millis();
 Adafruit_CCS811 ccs;
 DFRobot_SHT20 sht20;
 OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature sensors(&oneWire);
+DallasTemperature sensor_DS(&oneWire);
 
 enum Byte_names
 {
@@ -85,8 +85,8 @@ void initSHT20()
 
 float readDS18B20()
 {
-  sensors.requestTemperatures(); // Send the command to get temperature readings
-  return sensors.getTempCByIndex(0);
+  sensor_DS.requestTemperatures(); // Send the command to get temperature readings
+  return sensor_DS.getTempCByIndex(0);
 }
 
 void readCCS(int &ppm_Dioxide, int &ppb_TVOC)
